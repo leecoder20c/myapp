@@ -2,9 +2,354 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>내 사이트</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>프로젝트 허브 | 내 작업실</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Pretendard Web Font -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+          },
+          colors: {
+            toss: {
+              bg: '#F2F4F6',
+              card: '#FFFFFF',
+              blue: '#3182F6',
+              'blue-hover': '#1B64DA',
+              'blue-light': '#E8F3FF',
+              dark: '#191F28',
+              gray: '#4E5968',
+              'gray-light': '#8B95A1',
+              'border': '#E5E8EB',
+              'item-bg': '#F9FAFB'
+            }
+          },
+          boxShadow: {
+            'toss-card': '0 4px 20px 0 rgba(0, 0, 0, 0.04)',
+            'toss-hover': '0 12px 32px 0 rgba(0, 0, 0, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: #F2F4F6;
+    }
+
+    /* 카드 마이크로 인터랙션 */
+    .app-card {
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .app-card:hover {
+      transform: translateY(-3px);
+    }
+    .app-card:active {
+      transform: scale(0.985);
+    }
+
+    /* 호버 시 쉐브론 화살표 이동 */
+    .app-card:hover .chevron-icon {
+      transform: translateX(4px);
+      color: #3182F6;
+    }
+    .chevron-icon {
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+    }
+
+    /* 토스트 애니메이션 */
+    .toast-animate {
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, 16px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
 </head>
-<body>
-  <h1>GitHub Pages 배포 성공!</h1>
+<body class="min-h-screen text-toss-dark flex flex-col justify-between selection:bg-toss-blue selection:text-white">
+
+  <!-- 메인 컨테이너 -->
+  <main class="w-full max-w-2xl mx-auto px-5 py-10 sm:py-16">
+    
+    <!-- 헤더 영역 -->
+    <header class="mb-8">
+      <div class="flex items-center justify-between mb-2">
+        <div class="inline-flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-toss-blue animate-pulse"></span>
+          <span class="text-xs font-semibold tracking-wider text-toss-blue uppercase">Workspace Archive</span>
+        </div>
+        <span id="app-counter" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-white text-toss-gray border border-toss-border shadow-sm">
+          총 3개 앱
+        </span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-toss-dark">내 작업실</h1>
+      <p class="text-sm sm:text-base text-toss-gray mt-1.5 leading-relaxed">
+        프로젝트 내에서 개발하고 관리하는 웹 애플리케이션 모음입니다.
+      </p>
+    </header>
+
+    <!-- 빠른 검색 필터 인풋 -->
+    <div class="relative mb-6">
+      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-toss-gray-light">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+      <input 
+        type="text" 
+        id="search-input" 
+        placeholder="앱 이름 또는 설명 검색..." 
+        class="w-full pl-11 pr-4 py-3 bg-white rounded-2xl border border-transparent focus:border-toss-blue focus:bg-white focus:outline-none text-sm text-toss-dark placeholder-toss-gray-light transition-all shadow-toss-card"
+      />
+    </div>
+
+    <!-- 앱 목록 (카드 그리드) -->
+    <div id="card-list" class="flex flex-col gap-3.5">
+
+      <!-- 1. 가계부 앱 -->
+      <a href="/cal/index.html" class="app-card group relative block bg-white rounded-3xl p-5 sm:p-6 shadow-toss-card hover:shadow-toss-hover border border-transparent hover:border-blue-100 no-underline cursor-pointer">
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center gap-4 min-w-0">
+            <!-- 썸네일: 토스풍 기본 도구상자 SVG 아이콘 -->
+            <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-toss-item-bg flex items-center justify-center text-toss-gray group-hover:bg-toss-blue-light group-hover:text-toss-blue transition-colors duration-200">
+              <svg class="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <!-- 도구상자 본체 -->
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <!-- 도구상자 손잡이 -->
+                <path d="M16 7V4a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"></path>
+                <!-- 걸쇠 및 라인 -->
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <circle cx="12" cy="12" r="1.5" fill="currentColor"></circle>
+              </svg>
+            </div>
+            
+            <!-- 텍스트 정보 -->
+            <div class="truncate">
+              <div class="flex items-center gap-2">
+                <h2 class="text-base sm:text-lg font-bold text-toss-dark truncate group-hover:text-toss-blue transition-colors">
+                  가계부 앱
+                </h2>
+                <span class="inline-block px-2 py-0.5 text-[11px] font-semibold text-emerald-600 bg-emerald-50 rounded-md">Finance</span>
+              </div>
+              <p class="text-xs sm:text-sm text-toss-gray mt-1 truncate">
+                수입과 지출을 기록하고 자산을 한눈에 관리하는 가계부
+              </p>
+              <div class="flex items-center gap-2 mt-1.5">
+                <span class="text-[11px] font-medium text-toss-gray-light">/cal/index.html</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 우측 쉐브론 화살표 -->
+          <div class="shrink-0 flex items-center justify-center w-8 h-8 rounded-full">
+            <svg class="chevron-icon w-5 h-5 text-toss-gray-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- 2. N-back 훈련 -->
+      <a href="/nback/index.html" class="app-card group relative block bg-white rounded-3xl p-5 sm:p-6 shadow-toss-card hover:shadow-toss-hover border border-transparent hover:border-blue-100 no-underline cursor-pointer">
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center gap-4 min-w-0">
+            <!-- 썸네일: 토스풍 기본 도구상자 SVG 아이콘 -->
+            <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-toss-item-bg flex items-center justify-center text-toss-gray group-hover:bg-toss-blue-light group-hover:text-toss-blue transition-colors duration-200">
+              <svg class="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 7V4a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"></path>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <circle cx="12" cy="12" r="1.5" fill="currentColor"></circle>
+              </svg>
+            </div>
+            
+            <!-- 텍스트 정보 -->
+            <div class="truncate">
+              <div class="flex items-center gap-2">
+                <h2 class="text-base sm:text-lg font-bold text-toss-dark truncate group-hover:text-toss-blue transition-colors">
+                  N-back 훈련
+                </h2>
+                <span class="inline-block px-2 py-0.5 text-[11px] font-semibold text-purple-600 bg-purple-50 rounded-md">Cognitive</span>
+              </div>
+              <p class="text-xs sm:text-sm text-toss-gray mt-1 truncate">
+                작업 기억력과 집중력 향상을 위한 두뇌 트레이닝
+              </p>
+              <div class="flex items-center gap-2 mt-1.5">
+                <span class="text-[11px] font-medium text-toss-gray-light">/nback/index.html</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 우측 쉐브론 화살표 -->
+          <div class="shrink-0 flex items-center justify-center w-8 h-8 rounded-full">
+            <svg class="chevron-icon w-5 h-5 text-toss-gray-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- 3. 질문봇 -->
+      <a href="/question/index.html" class="app-card group relative block bg-white rounded-3xl p-5 sm:p-6 shadow-toss-card hover:shadow-toss-hover border border-transparent hover:border-blue-100 no-underline cursor-pointer">
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center gap-4 min-w-0">
+            <!-- 썸네일: 토스풍 기본 도구상자 SVG 아이콘 -->
+            <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-toss-item-bg flex items-center justify-center text-toss-gray group-hover:bg-toss-blue-light group-hover:text-toss-blue transition-colors duration-200">
+              <svg class="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 7V4a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"></path>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <circle cx="12" cy="12" r="1.5" fill="currentColor"></circle>
+              </svg>
+            </div>
+            
+            <!-- 텍스트 정보 -->
+            <div class="truncate">
+              <div class="flex items-center gap-2">
+                <h2 class="text-base sm:text-lg font-bold text-toss-dark truncate group-hover:text-toss-blue transition-colors">
+                  질문봇
+                </h2>
+                <span class="inline-block px-2 py-0.5 text-[11px] font-semibold text-blue-600 bg-blue-50 rounded-md">AI / Chat</span>
+              </div>
+              <p class="text-xs sm:text-sm text-toss-gray mt-1 truncate">
+                생각을 확장하고 깊이를 더하는 대화형 질문 탐색 도구
+              </p>
+              <div class="flex items-center gap-2 mt-1.5">
+                <span class="text-[11px] font-medium text-toss-gray-light">/question/index.html</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 우측 쉐브론 화살표 -->
+          <div class="shrink-0 flex items-center justify-center w-8 h-8 rounded-full">
+            <svg class="chevron-icon w-5 h-5 text-toss-gray-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- 검색 결과 없음 상태 안내 -->
+      <div id="empty-state" class="hidden text-center py-12 bg-white rounded-3xl border border-dashed border-toss-border">
+        <p class="text-sm font-medium text-toss-gray">검색 결과와 일치하는 앱이 없습니다.</p>
+        <span class="text-xs text-toss-gray-light mt-1 block">철자를 확인하거나 다른 검색어를 입력해 보세요.</span>
+      </div>
+
+    </div>
+
+    <!-- 하단 빠른 액션 바 (링크 주소 복사 등) -->
+    <div class="mt-8 pt-6 border-t border-toss-border flex items-center justify-between text-xs text-toss-gray">
+      <span>내부 프로젝트 저장소</span>
+      <button id="copy-hub-btn" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-toss-border hover:bg-gray-50 active:scale-95 transition-all text-toss-gray font-medium">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+        </svg>
+        <span>허브 링크 복사</span>
+      </button>
+    </div>
+
+  </main>
+
+  <!-- 미니 푸터 -->
+  <footer class="w-full text-center py-6 text-xs text-toss-gray-light">
+    &copy; Project Archive. Minimal & Fast.
+  </footer>
+
+  <!-- 토스 스타일 커스텀 토스트 알림창 -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 hidden z-50">
+    <div class="bg-toss-dark/95 backdrop-blur text-white text-xs sm:text-sm font-medium px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2">
+      <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+      </svg>
+      <span id="toast-message">알림</span>
+    </div>
+  </div>
+
+  <script>
+    // 검색 필터링 인터랙션
+    const searchInput = document.getElementById('search-input');
+    const cards = document.querySelectorAll('.app-card');
+    const emptyState = document.getElementById('empty-state');
+    const appCounter = document.getElementById('app-counter');
+
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const title = card.querySelector('h2').textContent.toLowerCase();
+        const desc = card.querySelector('p').textContent.toLowerCase();
+        const path = card.querySelector('.text-\\[11px\\]').textContent.toLowerCase();
+
+        if (title.includes(query) || desc.includes(query) || path.includes(query)) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      if (visibleCount === 0) {
+        emptyState.classList.remove('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+      }
+
+      appCounter.textContent = `총 ${visibleCount}개 앱`;
+    });
+
+    // 토스트 팝업 함수
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+      
+      toastMessage.textContent = message;
+      toast.classList.remove('hidden');
+      toast.classList.add('toast-animate');
+
+      setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('toast-animate');
+      }, 2300);
+    }
+
+    // 링크 복사 버튼 동작
+    const copyHubBtn = document.getElementById('copy-hub-btn');
+    copyHubBtn.addEventListener('click', () => {
+      const currentUrl = window.location.href;
+      
+      // execCommand 안전 복사 방식 (iFrame 및 브라우저 호환)
+      const tempInput = document.createElement('input');
+      tempInput.value = currentUrl;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      
+      try {
+        document.execCommand('copy');
+        showToast('허브 주소가 클립보드에 복사되었습니다.');
+      } catch (err) {
+        showToast('복사에 실패했습니다.');
+      } finally {
+        document.body.removeChild(tempInput);
+      }
+    });
+  </script>
 </body>
 </html>
